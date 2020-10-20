@@ -1,5 +1,5 @@
 from flask import Response, request
-from flask_jwt_extended import create_access_token, decode_token
+from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, fresh_jwt_required, decode_token
 from database.models import User
 from flask_restful import Resource
 import datetime
@@ -29,9 +29,6 @@ class LoginApi(Resource):
 
 
 class ValidateTokenApi(Resource):
-    def post(self):
-        body = request.get_json()
-        token = body.get('token')
-        authorized = decode_token(token)
-        return {'authorized': authorized.__contains__('type')}, 200
-        #return {'authorized': authorized}, 200
+    @jwt_required
+    def get(self):
+        return {'authorized': True}, 200
